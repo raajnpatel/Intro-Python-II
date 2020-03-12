@@ -1,6 +1,8 @@
 from room import Room
 from player import Player
 from colorama import Fore, Back, Style, init
+from termcolor import colored
+
 init()
 
 # Declare all the rooms
@@ -58,7 +60,8 @@ def input_instructions():
     print(Fore.LIGHTBLUE_EX + player.current_room.where_am_i())
 
     global user_input
-    user_input = input("Where would you like to go? N, S, E, W? Type Q to Quit.")
+    print(Fore.GREEN + "Where would you like to go? N, S, E, W? Type Q to Quit.")
+    user_input = input()
     check_input(user_input)
 
 
@@ -79,29 +82,15 @@ def move_player(inp):
         print(Fore.YELLOW + 'Thanks for playing!')
         quit_game = True
     else:
-        if inp == "w":
-            if player.current_room.w_to is None:
-                print(Fore.RED + "There is nothing in that direction")
-            else:
-                player.current_room = player.current_room.w_to
-
-        if inp == "e":
-            if player.current_room.e_to is None:
-                print(Fore.RED + "There is nothing in that direction")
-            else:
-                player.current_room = player.current_room.e_to
-
-        if inp == "s":
-            if player.current_room.s_to is None:
-                print(Fore.RED + "There is nothing in that direction")
-            else:
-                player.current_room = player.current_room.s_to
-
-        if inp == "n":
-            if player.current_room.n_to is None:
-                print(Fore.RED + "There is nothing in that direction")
-            else:
-                player.current_room = player.current_room.n_to
+        possible_room = getattr(player.current_room, f"{inp}_to")
+        # print(possible_room)
+        if possible_room is None:
+            print(Fore.RED + "There is nothing in that direction.  You have not moved.")
+            print(Fore.GREEN + "Where would you like to go? N, S, E, W? Type Q to Quit.")
+            user_input = input()
+            check_input(user_input)
+        else:
+            player.current_room = possible_room
 
 
 # If the user enters "q", quit the game.
